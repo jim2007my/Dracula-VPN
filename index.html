@@ -202,8 +202,8 @@
             </div>
 
             <div style="margin-top: 40px; text-align: center;">
-                <h2 id="ipDisplay" style="font-weight: 200; font-size: 32px; color: #fff;">104.21.43.122</h2>
-                <p style="font-size: 10px; color: #444; letter-spacing: 2px; margin-top: 5px;">CURRENT IP ADDRESS</p>
+                <h2 id="serverNameDisplay" style="font-weight: 400; font-size: 26px; color: #fff; text-transform: uppercase; letter-spacing: 2px;">NEW YORK EDGE</h2>
+                <p style="font-size: 10px; color: #444; letter-spacing: 3px; margin-top: 8px; font-weight: 700;">ACTIVE NODE</p>
             </div>
         </main>
 
@@ -223,15 +223,15 @@
                 <div class="back-btn" onclick="closeAllDrawers()"><i class="fas fa-arrow-right"></i></div>
                 <h3 style="font-size: 22px;">Locations</h3>
             </div>
-            <div class="option-item" onclick="selectServer('US', 'New York', 'us')">
+            <div class="option-item" onclick="selectServer('US', 'New York', 'us', 'NEW YORK EDGE')">
                 <div class="option-info"><img src="https://flagcdn.com/w20/us.png"> New York</div>
                 <span style="font-size: 12px; color: var(--primary);">Fastest</span>
             </div>
-            <div class="option-item" onclick="selectServer('GB', 'London', 'gb')">
+            <div class="option-item" onclick="selectServer('GB', 'London', 'gb', 'LONDON SHIELD')">
                 <div class="option-info"><img src="https://flagcdn.com/w20/gb.png"> London</div>
                 <span style="font-size: 12px; color: #555;">Stable</span>
             </div>
-            <div class="option-item" onclick="selectServer('DE', 'Frankfurt', 'de')">
+            <div class="option-item" onclick="selectServer('DE', 'Frankfurt', 'de', 'FRANKFURT CORE')">
                 <div class="option-info"><img src="https://flagcdn.com/w20/de.png"> Frankfurt</div>
                 <span style="font-size: 12px; color: #555;">Secure</span>
             </div>
@@ -321,9 +321,11 @@
             }
         });
 
-        function selectServer(code, city, flag) {
+        // تحديث الدالة لتقوم بتغيير الاسم المعروض في الواجهة
+        function selectServer(code, city, flag, serverName) {
             document.getElementById('currentCity').innerText = city;
             document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flag}.png`;
+            document.getElementById('serverNameDisplay').innerText = serverName;
             closeAllDrawers();
         }
 
