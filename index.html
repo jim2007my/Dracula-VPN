@@ -17,25 +17,21 @@
             --premium: #ffb800;
         }
 
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-    font-family: 'Lexend', sans-serif; 
-    
-    /* يمنع لون التظليل عند الضغط في الموبايل */
-    -webkit-tap-highlight-color: transparent; 
-    
-    /* يمنع ظهور قائمة اختيار النص عند الضغط المطول */
-    -webkit-user-select: none; 
-    user-select: none; 
-}
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Lexend', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            -webkit-user-select: none; 
+            user-select: none; 
+        }
 
-/* للتأكد من أن الأزرار لا تزال تستجيب للمؤشر بشكل صحيح */
-.glass-pill, .icon-btn, .power-btn, .back-btn, .option-item, .btn-premium {
-    cursor: pointer;
-    outline: none; /* يمنع ظهور إطار أزرق في بعض المتصفحات */
-}        
+        .glass-pill, .icon-btn, .power-btn, .back-btn, .option-item, .btn-premium {
+            cursor: pointer;
+            outline: none;
+        }        
+
         body {
             background: var(--bg);
             color: #ffffff;
@@ -45,8 +41,6 @@
             justify-content: center;
         }
 
-        /* تم حذف ستايل .aura من هنا */
-
         .main-wrapper {
             position: relative; z-index: 10;
             width: 100%; max-width: 450px;
@@ -55,7 +49,6 @@
             background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
         }
 
-        /* Header */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
 
         .glass-pill {
@@ -75,7 +68,6 @@
         }
         .icon-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Center Section */
         .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         .status-badge {
@@ -84,7 +76,6 @@
             margin-bottom: 50px; transition: 0.5s; color: #666;
         }
 
-        /* Power Button Logic */
         .power-outer {
             width: 220px; height: 220px; position: relative;
             display: flex; justify-content: center; align-items: center;
@@ -107,15 +98,14 @@
 
         .power-btn i { font-size: 50px; color: #333; transition: 0.4s; }
 
-        /* States */
         .connecting .loader-ring { opacity: 1; animation: spin 1s linear infinite; }
-        .connected .power-btn { border-color: var(--primary); box-shadow: 0 0 40px rgba(0,255,163,0.15); }
-        .connected .power-btn i { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
-        .connected .status-badge { color: var(--primary); border-color: var(--primary); }
+        
+        .main-wrapper.connected .power-btn { border-color: var(--primary); box-shadow: 0 0 40px rgba(0,255,163,0.15); }
+        .main-wrapper.connected .power-btn i { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+        .main-wrapper.connected .status-badge { color: var(--primary); border-color: var(--primary); }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 1px; background: var(--border);
@@ -126,31 +116,18 @@
         .stat-label { font-size: 9px; color: #555; letter-spacing: 2px; display: block; margin-bottom: 5px; }
         .stat-value { font-size: 24px; font-weight: 200; }
 
-        /* Full Screen Drawers System */
+        /* Drawers System */
         .drawer {
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: var(--bg); 
-            padding: 30px; 
+            position: absolute; top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: var(--bg); padding: 30px; 
             transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000; 
-            overflow-y: auto;
-            transform: translateY(100%); 
-            display: flex;
-            flex-direction: column;
+            z-index: 1000; overflow-y: auto;
+            transform: translateY(100%); display: flex; flex-direction: column;
         }
-        
         .drawer.active { transform: translateY(0); }
 
-        .drawer-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+        .drawer-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
 
         .back-btn {
             width: 40px; height: 40px;
@@ -167,7 +144,6 @@
         .option-item:hover { background: var(--surface); border-color: var(--primary); }
         .option-info { display: flex; align-items: center; gap: 15px; }
 
-        /* Premium Specific */
         .premium-card {
             background: linear-gradient(135deg, #ffb800 0%, #ff8a00 100%);
             padding: 40px 25px; border-radius: 25px; color: #000; text-align: center;
@@ -293,50 +269,84 @@
     </div>
 
     <script>
+        // الأصوات
+        const sfxConnect = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        const sfxSuccess = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+        const sfxDisconnect = new Audio('https://assets.mixkit.co/active_storage/sfx/2567/2567-preview.mp3');
+
         const vpnToggle = document.getElementById('vpnToggle');
         const powerContainer = document.getElementById('powerContainer');
         const statusBadge = document.getElementById('statusBadge');
+        const mainApp = document.getElementById('mainApp');
+        
         let isConnected = false;
         let isConnecting = false;
+        let statInterval;
+
+        // وظيفة الاهتزاز
+        function triggerHaptic(duration = 50) {
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(duration);
+            }
+        }
 
         function toggleDrawer(drawerId) {
+            triggerHaptic(20); // اهتزاز خفيف عند فتح القوائم
             document.getElementById(drawerId).classList.add('active');
         }
 
         function closeAllDrawers() {
+            triggerHaptic(15);
             document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
         }
 
         vpnToggle.addEventListener('click', () => {
             if (isConnecting) return;
+            
             if (!isConnected) {
+                // اهتزاز عند الضغط للتشغيل
+                triggerHaptic([60, 40, 60]); // نبضتان (Double Pulse)
+                sfxConnect.play();
+                
                 isConnecting = true;
                 powerContainer.classList.add('connecting');
                 statusBadge.innerText = "SHIELDING...";
+                
                 setTimeout(() => {
                     isConnecting = false;
                     isConnected = true;
+                    
+                    // اهتزاز طويل عند نجاح الاتصال
+                    triggerHaptic(150); 
+                    sfxSuccess.play();
+                    
                     powerContainer.classList.remove('connecting');
-                    powerContainer.parentElement.parentElement.classList.add('connected');
+                    mainApp.classList.add('connected');
                     statusBadge.innerText = "CONNECTION SECURE";
                     startStats();
                 }, 2000);
             } else {
+                // اهتزاز عند الفصل
+                triggerHaptic(80);
+                sfxDisconnect.play();
+                
                 isConnected = false;
-                powerContainer.parentElement.parentElement.classList.remove('connected');
+                isConnecting = false;
+                powerContainer.classList.remove('connecting');
+                mainApp.classList.remove('connected');
                 statusBadge.innerText = "READY TO SHIELD";
                 stopStats();
             }
         });
 
         function selectServer(code, city, flag, serverName) {
+            triggerHaptic(30);
             document.getElementById('currentCity').innerText = city;
             document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flag}.png`;
             document.getElementById('serverNameDisplay').innerText = serverName;
             closeAllDrawers();
         }
 
-        let statInterval;
         function startStats() {
             statInterval = setInterval(() => {
                 document.getElementById('downSpeed').innerText = (Math.random() * 50 + 10).toFixed(1);
@@ -349,8 +359,6 @@
             document.getElementById('downSpeed').innerText = "0.0";
             document.getElementById('pingVal').innerText = "--";
         }
-
-        // تم حذف كود مستمع حركة الماوس (mousemove) من هنا
     </script>
 </body>
 </html>
