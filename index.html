@@ -17,8 +17,25 @@
             --premium: #ffb800;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
-        
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Lexend', sans-serif; 
+    
+    /* يمنع لون التظليل عند الضغط في الموبايل */
+    -webkit-tap-highlight-color: transparent; 
+    
+    /* يمنع ظهور قائمة اختيار النص عند الضغط المطول */
+    -webkit-user-select: none; 
+    user-select: none; 
+}
+
+/* للتأكد من أن الأزرار لا تزال تستجيب للمؤشر بشكل صحيح */
+.glass-pill, .icon-btn, .power-btn, .back-btn, .option-item, .btn-premium {
+    cursor: pointer;
+    outline: none; /* يمنع ظهور إطار أزرق في بعض المتصفحات */
+}        
         body {
             background: var(--bg);
             color: #ffffff;
