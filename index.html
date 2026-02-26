@@ -28,14 +28,7 @@
             justify-content: center;
         }
 
-        /* Aura Background */
-        .aura {
-            position: fixed; width: 600px; height: 600px;
-            background: var(--primary);
-            filter: blur(180px); border-radius: 50%;
-            opacity: 0.03; pointer-events: none; z-index: 0;
-            transition: 0.1s ease-out;
-        }
+        /* تم حذف ستايل .aura من هنا */
 
         .main-wrapper {
             position: relative; z-index: 10;
@@ -171,8 +164,6 @@
     </style>
 </head>
 <body>
-
-    <div class="aura" id="aura"></div>
 
     <div class="main-wrapper" id="mainApp">
         <header class="header">
@@ -321,7 +312,6 @@
             }
         });
 
-        // تحديث الدالة لتقوم بتغيير الاسم المعروض في الواجهة
         function selectServer(code, city, flag, serverName) {
             document.getElementById('currentCity').innerText = city;
             document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flag}.png`;
@@ -343,11 +333,7 @@
             document.getElementById('pingVal').innerText = "--";
         }
 
-        document.addEventListener('mousemove', (e) => {
-            const aura = document.getElementById('aura');
-            aura.style.left = (e.clientX - 300) + 'px';
-            aura.style.top = (e.clientY - 300) + 'px';
-        });
+        // تم حذف كود مستمع حركة الماوس (mousemove) من هنا
     </script>
 </body>
 </html>
