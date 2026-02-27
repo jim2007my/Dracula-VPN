@@ -1,40 +1,38 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dracula VPN | Pro Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@200;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Lexend:wght@200;400;700&display=swap');
 
         :root {
             --primary: #00ffa3; 
             --error: #ff4b4b;
             --bg: #050505;
             --surface: rgba(255, 255, 255, 0.05);
+            --surface-hover: rgba(255, 255, 255, 0.1);
             --border: rgba(255, 255, 255, 0.1);
             --premium: #ffb800;
+            --text-main: #ffffff;
+            --text-muted: #888888;
         }
 
         * { 
             margin: 0; 
             padding: 0; 
             box-sizing: border-box; 
-            font-family: 'Lexend', sans-serif; 
+            font-family: 'Cairo', 'Lexend', sans-serif; 
             -webkit-tap-highlight-color: transparent; 
             -webkit-user-select: none; 
             user-select: none; 
         }
 
-        .glass-pill, .icon-btn, .power-btn, .back-btn, .option-item, .btn-premium {
-            cursor: pointer;
-            outline: none;
-        }        
-
         body {
             background: var(--bg);
-            color: #ffffff;
+            color: var(--text-main);
             height: 100vh;
             overflow: hidden;
             display: flex;
@@ -52,13 +50,12 @@
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
 
         .glass-pill {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 10px 18px; border-radius: 100px;
-            display: flex; align-items: center; gap: 12px;
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: 100px;
+            display: flex; align-items: center; gap: 10px; flex-direction: row;
             cursor: pointer; transition: 0.3s;
         }
-        .glass-pill:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
+        .glass-pill:hover { background: var(--surface-hover); border-color: var(--primary); }
 
         .icon-btn {
             width: 45px; height: 45px;
@@ -71,9 +68,9 @@
         .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         .status-badge {
-            font-size: 10px; font-weight: 700; letter-spacing: 3px;
+            font-size: 11px; font-weight: 700; letter-spacing: 2px;
             padding: 6px 15px; border-radius: 50px; border: 1px solid var(--border);
-            margin-bottom: 50px; transition: 0.5s; color: #666;
+            margin-bottom: 50px; transition: 0.5s; color: var(--text-muted); font-family: 'Lexend';
         }
 
         .power-outer {
@@ -90,8 +87,7 @@
         .power-btn {
             width: 160px; height: 160px;
             background: #0a0a0a; border: 1px solid var(--border);
-            border-radius: 50%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; gap: 10px;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: 0.4s; z-index: 5;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
@@ -106,174 +102,421 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        .server-info-display { margin-top: 40px; text-align: center; }
+        .server-info-display h2 { font-weight: 700; font-size: 24px; color: #fff; letter-spacing: 1px; font-family: 'Lexend'; }
+        .server-info-display p { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; margin-top: 5px; font-weight: 600; }
+
         .stats-grid {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 1px; background: var(--border);
-            border-radius: 20px; overflow: hidden; margin-top: 40px;
+            border-radius: 20px; overflow: hidden; margin-top: 30px;
         }
 
-        .stat-box { background: var(--bg); padding: 20px; text-align: center; }
-        .stat-label { font-size: 9px; color: #555; letter-spacing: 2px; display: block; margin-bottom: 5px; }
-        .stat-value { font-size: 24px; font-weight: 200; }
+        .stat-box { background: var(--bg); padding: 20px; text-align: center; font-family: 'Lexend'; }
+        .stat-label { font-size: 10px; color: var(--text-muted); letter-spacing: 2px; display: block; margin-bottom: 5px; font-weight: 600; }
+        .stat-value { font-size: 24px; font-weight: 400; }
 
         /* Drawers System */
         .drawer {
             position: absolute; top: 0; left: 0; 
             width: 100%; height: 100%; 
-            background: var(--bg); padding: 30px; 
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg); padding: 25px; 
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000; overflow-y: auto;
             transform: translateY(100%); display: flex; flex-direction: column;
         }
         .drawer.active { transform: translateY(0); }
+        .drawer::-webkit-scrollbar { width: 4px; }
+        .drawer::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-        .drawer-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
-
+        .drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; position: sticky; top: 0; background: var(--bg); padding-bottom: 10px; z-index: 10; }
+        .drawer-title { font-size: 20px; font-weight: 700; }
+        
         .back-btn {
             width: 40px; height: 40px;
             display: flex; justify-content: center; align-items: center;
-            background: var(--surface); border-radius: 10px; cursor: pointer;
+            background: var(--surface); border-radius: 12px; cursor: pointer; border: 1px solid var(--border);
         }
 
-        .option-item {
+        /* Server List Styles */
+        .server-search {
+            width: 100%; padding: 15px 20px; border-radius: 12px;
+            background: var(--surface); border: 1px solid var(--border);
+            color: #fff; outline: none; margin-bottom: 20px; font-family: 'Cairo';
+        }
+        .server-search::placeholder { color: var(--text-muted); }
+
+        .server-category { font-size: 12px; color: var(--text-muted); margin: 15px 0 10px; font-weight: 600; }
+        
+        .server-item {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 20px; border-radius: 15px; cursor: pointer; transition: 0.2s;
-            margin-bottom: 12px; background: rgba(255,255,255,0.02);
+            padding: 16px; border-radius: 15px; cursor: pointer; transition: 0.2s;
+            margin-bottom: 10px; background: rgba(255,255,255,0.02);
             border: 1px solid var(--border);
         }
-        .option-item:hover { background: var(--surface); border-color: var(--primary); }
-        .option-info { display: flex; align-items: center; gap: 15px; }
+        .server-item:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.2); }
+        .server-item.active { border-color: var(--primary); background: rgba(0, 255, 163, 0.05); }
+        
+        .server-info { display: flex; align-items: center; gap: 15px; }
+        .server-info img { width: 24px; border-radius: 4px; }
+        .server-details { display: flex; flex-direction: column; text-align: left; }
+        .server-name { font-size: 15px; font-weight: 600; }
+        .server-ping { font-size: 11px; color: var(--text-muted); font-family: 'Lexend'; margin-top: 3px; }
+        .ping-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-left: 5px; }
+        .ping-good { background: var(--primary); }
+        .ping-med { background: var(--premium); }
+        
+        .server-check { color: var(--primary); font-size: 18px; display: none; }
+        .server-item.active .server-check { display: block; }
 
-        .premium-card {
-            background: linear-gradient(135deg, #ffb800 0%, #ff8a00 100%);
-            padding: 40px 25px; border-radius: 25px; color: #000; text-align: center;
-            margin-bottom: 30px;
+        /* Settings Styles */
+        .settings-section { margin-bottom: 25px; background: rgba(255,255,255,0.01); border-radius: 16px; border: 1px solid var(--border); padding: 5px 15px; }
+        .settings-title { font-size: 13px; color: var(--primary); margin: 15px 0 5px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        
+        .setting-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px 0; border-bottom: 1px solid var(--border);
         }
-        .btn-premium {
-            background: #000; color: #fff; border: none; padding: 15px 40px;
-            border-radius: 12px; font-weight: 700; margin-top: 20px; cursor: pointer;
-            width: 100%; font-size: 16px;
+        .setting-item:last-child { border-bottom: none; }
+        
+        .setting-info { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+        .setting-name { font-size: 15px; font-weight: 600; }
+        .setting-desc { font-size: 11px; color: var(--text-muted); }
+
+        /* Custom Toggle Switch */
+        .toggle-switch {
+            position: relative; display: inline-block; width: 46px; height: 26px;
         }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Custom Select */
+        .custom-select {
+            background: var(--surface); border: 1px solid var(--border); color: #fff;
+            padding: 8px 12px; border-radius: 8px; outline: none; font-family: 'Lexend'; font-size: 13px;
+        }
+
+        /* Split Tunneling App List */
+        .app-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px; border-bottom: 1px solid var(--border);
+        }
+        .app-info { display: flex; align-items: center; gap: 12px; }
+        .app-icon { width: 35px; height: 35px; background: var(--surface); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+
     </style>
 </head>
 <body>
 
     <div class="main-wrapper" id="mainApp">
         <header class="header">
-            <div class="icon-btn" style="color: var(--premium);" onclick="toggleDrawer('premiumDrawer')">
-                <i class="fas fa-crown"></i>
+            <div class="icon-btn" onclick="toggleDrawer('settingsDrawer')">
+                <i class="fas fa-bars"></i>
             </div>
             
             <div class="glass-pill" onclick="toggleDrawer('serverDrawer')">
-                <img id="currentFlag" src="https://flagcdn.com/w20/us.png" width="20">
-                <span id="currentCity" style="font-size: 13px;">New York</span>
-                <i class="fas fa-chevron-down" style="font-size: 10px; opacity: 0.4;"></i>
+                <i class="fas fa-chevron-down" style="font-size: 10px; opacity: 0.5;"></i>
+                <span id="currentCity" style="font-size: 14px; font-weight: 600;">Germany</span>
+                <img id="currentFlag" src="https://flagcdn.com/w40/de.png" width="22" style="border-radius: 3px;">
             </div>
 
-            <div class="icon-btn" onclick="toggleDrawer('settingsDrawer')">
-                <i class="fas fa-cog"></i>
+            <div class="icon-btn" style="color: var(--premium); border-color: rgba(255, 184, 0, 0.3);" onclick="toggleDrawer('premiumDrawer')">
+                <i class="fas fa-crown"></i>
             </div>
         </header>
 
         <main class="hero">
-            <div class="status-badge" id="statusBadge">READY TO SHIELD</div>
+            <div class="status-badge" id="statusBadge">READY TO CONNECT</div>
             
             <div class="power-outer" id="powerContainer">
                 <div class="loader-ring"></div>
                 <div class="power-btn" id="vpnToggle">
-                    <i class="fas fa-shield-halved"></i>
+                    <i class="fas fa-power-off"></i>
                 </div>
             </div>
 
-            <div style="margin-top: 40px; text-align: center;">
-                <h2 id="serverNameDisplay" style="font-weight: 400; font-size: 26px; color: #fff; text-transform: uppercase; letter-spacing: 2px;">NEW YORK EDGE</h2>
-                <p style="font-size: 10px; color: #444; letter-spacing: 3px; margin-top: 8px; font-weight: 700;">ACTIVE NODE</p>
+            <div class="server-info-display">
+                <h2 id="serverNameDisplay">GERMANY CORE</h2>
+                <p>Current encrypted IP hidden</p>
             </div>
         </main>
 
         <div class="stats-grid">
             <div class="stat-box">
-                <span class="stat-label">DOWNLOAD</span>
-                <div class="stat-value"><span id="downSpeed">0.0</span><small style="font-size: 12px; color: #444;">Mb/s</small></div>
+                <span class="stat-label">DOWNLOAD SPEED</span>
+                <div class="stat-value"><span id="downSpeed">0.0</span><small style="font-size: 12px; color: var(--text-muted);"> Mbps</small></div>
             </div>
             <div class="stat-box">
                 <span class="stat-label">LATENCY</span>
-                <div class="stat-value"><span id="pingVal">--</span><small style="font-size: 12px; color: #444;">ms</small></div>
+                <div class="stat-value"><span id="pingVal">--</span><small style="font-size: 12px; color: var(--text-muted);"> ms</small></div>
             </div>
         </div>
 
         <div class="drawer" id="serverDrawer">
             <div class="drawer-header">
-                <div class="back-btn" onclick="closeAllDrawers()"><i class="fas fa-arrow-right"></i></div>
-                <h3 style="font-size: 22px;">Locations</h3>
+                <h3 class="drawer-title">Locations & Servers</h3>
+                <div class="back-btn" onclick="closeAllDrawers()"><i class="fas fa-times"></i></div>
             </div>
-            <div class="option-item" onclick="selectServer('US', 'New York', 'us', 'NEW YORK EDGE')">
-                <div class="option-info"><img src="https://flagcdn.com/w20/us.png"> New York</div>
-                <span style="font-size: 12px; color: var(--primary);">Fastest</span>
-            </div>
-            <div class="option-item" onclick="selectServer('GB', 'London', 'gb', 'LONDON SHIELD')">
-                <div class="option-info"><img src="https://flagcdn.com/w20/gb.png"> London</div>
-                <span style="font-size: 12px; color: #555;">Stable</span>
-            </div>
-            <div class="option-item" onclick="selectServer('DE', 'Frankfurt', 'de', 'FRANKFURT CORE')">
-                <div class="option-info"><img src="https://flagcdn.com/w20/de.png"> Frankfurt</div>
-                <span style="font-size: 12px; color: #555;">Secure</span>
-            </div>
+            
+            <input type="text" class="server-search" placeholder="Search country or city..." onkeyup="filterServers(this.value)">
+            
+            <div id="serverListContainer">
+                </div>
         </div>
 
         <div class="drawer" id="settingsDrawer">
             <div class="drawer-header">
-                <div class="back-btn" onclick="closeAllDrawers()"><i class="fas fa-arrow-right"></i></div>
-                <h3 style="font-size: 22px;">Settings</h3>
+                <h3 class="drawer-title">Advanced Settings</h3>
+                <div class="back-btn" onclick="closeAllDrawers()"><i class="fas fa-times"></i></div>
             </div>
-            <div class="option-item">
-                <div class="option-info"><i class="fas fa-shield-halved"></i> Connection Protocol</div>
-                <span style="color: var(--primary);">WireGuard</span>
+
+            <h4 class="settings-title"><i class="fas fa-shield-alt"></i> Security</h4>
+            <div class="settings-section">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-name">Kill Switch</span>
+                        <span class="setting-desc">Instantly disconnects internet if VPN drops to prevent IP leaks</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked onchange="triggerHaptic(20)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-name">DNS Protection</span>
+                        <span class="setting-desc">Route DNS requests through encrypted servers</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked onchange="triggerHaptic(20)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
-            <div class="option-item">
-                <div class="option-info"><i class="fas fa-skull-crossbones"></i> Kill Switch</div>
-                <i class="fas fa-toggle-on" style="color: var(--primary); font-size: 24px;"></i>
+
+            <h4 class="settings-title"><i class="fas fa-globe"></i> Connection</h4>
+            <div class="settings-section">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-name">Auto Connect</span>
+                        <span class="setting-desc">Connects when app opens</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" onchange="triggerHaptic(20)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-name">Auto Reconnect</span>
+                        <span class="setting-desc">Attempts to reconnect if network drops</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked onchange="triggerHaptic(20)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
-            <div class="option-item">
-                <div class="option-info"><i class="fas fa-fingerprint"></i> Split Tunneling</div>
-                <i class="fas fa-chevron-left" style="opacity: 0.3;"></i>
+
+            <h4 class="settings-title"><i class="fas fa-network-wired"></i> Protocol</h4>
+            <div class="settings-section">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-name">Connection Type</span>
+                    </div>
+                    <select class="custom-select" onchange="triggerHaptic(15)">
+                        <option>Automatic (Recommended)</option>
+                        <option>WireGuard®</option>
+                        <option>OpenVPN (UDP)</option>
+                        <option>OpenVPN (TCP)</option>
+                    </select>
+                </div>
             </div>
-            <div class="option-item">
-                <div class="option-info"><i class="fas fa-user-circle"></i> Account Profile</div>
-                <span style="color: var(--premium);">Gold Member</span>
+
+            <h4 class="settings-title"><i class="fas fa-mobile-alt"></i> Split Tunneling</h4>
+            <div class="settings-section" style="padding: 0;">
+                <div class="setting-item" style="padding: 15px; cursor: pointer;" onclick="toggleDrawer('splitTunnelDrawer')">
+                    <div class="setting-info">
+                        <span class="setting-name">Select VPN Apps</span>
+                        <span class="setting-desc" style="color: var(--primary);">Enabled for 3 apps</span>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="drawer" id="splitTunnelDrawer" style="z-index: 1001;">
+            <div class="drawer-header">
+                <h3 class="drawer-title">Select Applications</h3>
+                <div class="back-btn" onclick="document.getElementById('splitTunnelDrawer').classList.remove('active'); triggerHaptic(15);"><i class="fas fa-arrow-left"></i></div>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Choose apps to route exclusively through the VPN.</p>
+            
+            <div class="settings-section" style="padding: 0;">
+                <div class="app-item">
+                    <div class="app-info">
+                        <div class="app-icon" style="color: #25D366;"><i class="fab fa-whatsapp"></i></div>
+                        <span class="setting-name">WhatsApp</span>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked onchange="triggerHaptic(15)"><span class="slider"></span></label>
+                </div>
+                <div class="app-item">
+                    <div class="app-info">
+                        <div class="app-icon" style="color: #0088cc;"><i class="fab fa-telegram-plane"></i></div>
+                        <span class="setting-name">Telegram</span>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked onchange="triggerHaptic(15)"><span class="slider"></span></label>
+                </div>
+                <div class="app-item">
+                    <div class="app-info">
+                        <div class="app-icon" style="color: #E1306C;"><i class="fab fa-instagram"></i></div>
+                        <span class="setting-name">Instagram</span>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked onchange="triggerHaptic(15)"><span class="slider"></span></label>
+                </div>
+                <div class="app-item">
+                    <div class="app-info">
+                        <div class="app-icon" style="color: #3b5998;"><i class="fab fa-facebook-f"></i></div>
+                        <span class="setting-name">Facebook</span>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" onchange="triggerHaptic(15)"><span class="slider"></span></label>
+                </div>
             </div>
         </div>
 
         <div class="drawer" id="premiumDrawer">
             <div class="drawer-header">
-                <div class="back-btn" onclick="closeAllDrawers()"><i class="fas fa-arrow-right"></i></div>
-                <h3 style="font-size: 22px;">Premium Access</h3>
+                <h3 class="drawer-title" style="color: var(--premium);">Premium Subscription</h3>
+                <div class="back-btn" onclick="closeAllDrawers()"><i class="fas fa-times"></i></div>
             </div>
-            <div class="premium-card">
-                <i class="fas fa-crown" style="font-size: 50px; margin-bottom: 15px;"></i>
-                <h2>Dracula Elite</h2>
-                <p style="font-size: 14px; opacity: 0.8; margin-top: 5px;">Unlock the full potential of your connection</p>
-                <button class="btn-premium">Go Premium Now</button>
-            </div>
-            <h4 style="margin: 10px 0 20px; color: #666; font-size: 12px; letter-spacing: 1px;">EXCLUSIVE FEATURES</h4>
-            <div class="option-item">
-                <div class="option-info"><i class="fas fa-bolt" style="color: var(--premium);"></i> No Speed Limits</div>
-            </div>
-            <div class="option-item">
-                <div class="option-info"><i class="fas fa-globe" style="color: var(--premium);"></i> 100+ Global Servers</div>
-            </div>
-            <div class="option-item">
-                <div class="option-info"><i class="fas fa-ad-circle" style="color: var(--premium);"></i> Ad-Free Experience</div>
+            <div style="text-align: center; margin-top: 20px;">
+                <i class="fas fa-crown" style="font-size: 60px; color: var(--premium); margin-bottom: 20px; text-shadow: 0 0 20px rgba(255,184,0,0.5);"></i>
+                <h2 style="font-family: 'Lexend';">DRACULA ELITE</h2>
+                <p style="color: var(--text-muted); margin-top: 10px; font-size: 14px;">Get maximum speed without limits</p>
+                
+                <div style="background: var(--surface); border: 1px solid var(--premium); border-radius: 16px; padding: 20px; margin-top: 30px; text-align: left;">
+                    <div style="margin-bottom: 15px;"><i class="fas fa-check" style="color: var(--primary); margin-left: 10px;"></i> Over 150 Premium Countries</div>
+                    <div style="margin-bottom: 15px;"><i class="fas fa-check" style="color: var(--primary); margin-left: 10px;"></i> Dedicated Gaming & Streaming Servers</div>
+                    <div style="margin-bottom: 15px;"><i class="fas fa-check" style="color: var(--primary); margin-left: 10px;"></i> No Ads Ever</div>
+                </div>
+                
+                <button style="width: 100%; padding: 16px; background: var(--premium); color: #000; font-weight: 700; border: none; border-radius: 12px; margin-top: 30px; font-size: 16px; cursor: pointer;">Upgrade Now</button>
             </div>
         </div>
+
     </div>
 
     <script>
-        // الأصوات
+        // Sound Effects
         const sfxConnect = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
         const sfxSuccess = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
         const sfxDisconnect = new Audio('https://assets.mixkit.co/active_storage/sfx/2567/2567-preview.mp3');
 
+        // Server List (Database)
+        const servers = [
+            { id: 'de-1', code: 'de', city: 'Germany', engName: 'GERMANY CORE', ping: 32 },
+            { id: 'us-ny', code: 'us', city: 'New York', engName: 'NEW YORK EDGE', ping: 110 },
+            { id: 'gb-lon', code: 'gb', city: 'London', engName: 'LONDON SHIELD', ping: 65 },
+            { id: 'fr-par', code: 'fr', city: 'Paris', engName: 'PARIS NODE', ping: 45 },
+            { id: 'nl-ams', code: 'nl', city: 'Amsterdam', engName: 'AMSTERDAM P2P', ping: 38 },
+            { id: 'ae-dxb', code: 'ae', city: 'Dubai', engName: 'DUBAI FAST', ping: 85 },
+            { id: 'eg-cai', code: 'eg', city: 'Cairo', engName: 'CAIRO LINK', ping: 90 },
+            { id: 'tr-ist', code: 'tr', city: 'Istanbul', engName: 'ISTANBUL PRO', ping: 55 },
+            { id: 'jp-tok', code: 'jp', city: 'Tokyo', engName: 'TOKYO GAMING', ping: 210 },
+            { id: 'br-sp', code: 'br', city: 'Sao Paulo', engName: 'BRAZIL SOUTH', ping: 240 },
+            { id: 'sg-sin', code: 'sg', city: 'Singapore', engName: 'SINGAPORE ASIA', ping: 150 },
+            { id: 'ca-tor', code: 'ca', city: 'Toronto', engName: 'CANADA NORTH', ping: 125 }
+        ];
+
+        let currentServerId = 'de-1'; // Default Server
+
+        // Render Servers Function
+        function renderServers(searchQuery = '') {
+            const container = document.getElementById('serverListContainer');
+            container.innerHTML = '';
+
+            // Filter by search query
+            let filtered = servers.filter(s => 
+                s.city.toLowerCase().includes(searchQuery.toLowerCase()) || s.engName.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            // Separate active server from others
+            const activeServer = filtered.find(s => s.id === currentServerId);
+            const otherServers = filtered.filter(s => s.id !== currentServerId).sort((a,b) => a.ping - b.ping);
+
+            if (!searchQuery && activeServer) {
+                container.innerHTML += `<div class="server-category">Current Server</div>`;
+                container.appendChild(createServerElement(activeServer, true));
+                container.innerHTML += `<div class="server-category" style="margin-top: 25px;">Other Servers</div>`;
+            }
+
+            otherServers.forEach(s => {
+                container.appendChild(createServerElement(s, false));
+            });
+            
+            if(filtered.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); margin-top: 20px;">No servers found.</p>`;
+            }
+        }
+
+        // Create Server HTML Element
+        function createServerElement(server, isActive) {
+            const div = document.createElement('div');
+            div.className = `server-item ${isActive ? 'active' : ''}`;
+            div.onclick = () => selectServer(server.id);
+            
+            const pingColorClass = server.ping < 70 ? 'ping-good' : (server.ping < 150 ? 'ping-med' : '');
+            
+            div.innerHTML = `
+                <div class="server-info">
+                    <img src="https://flagcdn.com/w40/${server.code}.png" alt="${server.city}">
+                    <div class="server-details">
+                        <span class="server-name">${server.city}</span>
+                        <span class="server-ping">Ping: ${server.ping}ms <span class="ping-dot ${pingColorClass}"></span></span>
+                    </div>
+                </div>
+                <div class="server-check"><i class="fas fa-check-circle"></i></div>
+            `;
+            return div;
+        }
+
+        // Select Server
+        function selectServer(id) {
+            triggerHaptic(30);
+            currentServerId = id;
+            const s = servers.find(x => x.id === id);
+            
+            document.getElementById('currentCity').innerText = s.city;
+            document.getElementById('currentFlag').src = `https://flagcdn.com/w40/${s.code}.png`;
+            document.getElementById('serverNameDisplay').innerText = s.engName;
+            
+            renderServers(); // Re-render list
+            closeAllDrawers();
+            
+            // If connected, simulate re-connect
+            if(isConnected) {
+                vpnToggle.click(); // Disconnect
+                setTimeout(() => vpnToggle.click(), 500); // Connect to new server
+            }
+        }
+
+        function filterServers(val) {
+            renderServers(val);
+        }
+
+        // Initial Render
+        renderServers();
+
+        // Connection Logic
         const vpnToggle = document.getElementById('vpnToggle');
         const powerContainer = document.getElementById('powerContainer');
         const statusBadge = document.getElementById('statusBadge');
@@ -283,7 +526,6 @@
         let isConnecting = false;
         let statInterval;
 
-        // وظيفة الاهتزاز
         function triggerHaptic(duration = 50) {
             if (window.navigator && window.navigator.vibrate) {
                 window.navigator.vibrate(duration);
@@ -291,7 +533,7 @@
         }
 
         function toggleDrawer(drawerId) {
-            triggerHaptic(20); // اهتزاز خفيف عند فتح القوائم
+            triggerHaptic(20);
             document.getElementById(drawerId).classList.add('active');
         }
 
@@ -304,29 +546,27 @@
             if (isConnecting) return;
             
             if (!isConnected) {
-                // اهتزاز عند الضغط للتشغيل
-                triggerHaptic([60, 40, 60]); // نبضتان (Double Pulse)
+                triggerHaptic([60, 40, 60]); 
                 sfxConnect.play();
                 
                 isConnecting = true;
                 powerContainer.classList.add('connecting');
-                statusBadge.innerText = "SHIELDING...";
+                statusBadge.innerText = "ENCRYPTING...";
+                statusBadge.style.color = "var(--text-muted)";
                 
                 setTimeout(() => {
                     isConnecting = false;
                     isConnected = true;
                     
-                    // اهتزاز طويل عند نجاح الاتصال
                     triggerHaptic(150); 
                     sfxSuccess.play();
                     
                     powerContainer.classList.remove('connecting');
                     mainApp.classList.add('connected');
-                    statusBadge.innerText = "CONNECTION SECURE";
+                    statusBadge.innerText = "CONNECTED";
                     startStats();
                 }, 2000);
             } else {
-                // اهتزاز عند الفصل
                 triggerHaptic(80);
                 sfxDisconnect.play();
                 
@@ -334,23 +574,20 @@
                 isConnecting = false;
                 powerContainer.classList.remove('connecting');
                 mainApp.classList.remove('connected');
-                statusBadge.innerText = "READY TO SHIELD";
+                statusBadge.innerText = "READY TO CONNECT";
+                statusBadge.style.color = "var(--text-muted)";
                 stopStats();
             }
         });
 
-        function selectServer(code, city, flag, serverName) {
-            triggerHaptic(30);
-            document.getElementById('currentCity').innerText = city;
-            document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flag}.png`;
-            document.getElementById('serverNameDisplay').innerText = serverName;
-            closeAllDrawers();
-        }
-
         function startStats() {
+            const activeServer = servers.find(s => s.id === currentServerId);
+            const basePing = activeServer.ping;
+
             statInterval = setInterval(() => {
-                document.getElementById('downSpeed').innerText = (Math.random() * 50 + 10).toFixed(1);
-                document.getElementById('pingVal').innerText = Math.floor(Math.random() * 20 + 30);
+                // Simulated speeds and ping
+                document.getElementById('downSpeed').innerText = (Math.random() * 80 + 20).toFixed(1);
+                document.getElementById('pingVal').innerText = basePing + Math.floor(Math.random() * 10 - 5);
             }, 1500);
         }
 
